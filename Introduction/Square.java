@@ -37,4 +37,9 @@ public class Square<T extends Number> implements Measurable {
     return getArea().compareTo(other.getArea());
 
   }
+  //Overriding
+  public String toString(){
+    return "This is a square of area " + getArea() +
+           " and perimeter " + getPerimeter();
+  }
 }
