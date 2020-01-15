@@ -1,7 +1,7 @@
 /**
   * An interface for a bag of items
   **/
-public interface Bag<T> {
+public interface BagInterface<T> {
 
     /** Adds item to the bag.
      *  @return true if the insertion was successful
@@ -16,6 +16,8 @@ public interface Bag<T> {
      **/
     public T remove(T item);
 
+    public T remove();
+
     public boolean contains(T item);
 
     public int getFrequencyOf(T item);
@@ -27,6 +29,8 @@ public interface Bag<T> {
     public boolean isFull();
 
     public int size();
+
+    public void clear();
 
 
 }
