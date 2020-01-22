@@ -1,5 +1,5 @@
 /**
-  * An interface for a bag of items
+  * An interface for a bag (multiset) of items
   **/
 public interface BagInterface<T> {
 
@@ -31,6 +31,12 @@ public interface BagInterface<T> {
     public int size();
 
     public void clear();
+
+    public BagInterface<T> intersection(BagInterface<T> anotherBag);
+
+    public BagInterface<T> union(BagInterface<T> anotherBag);
+
+    public BagInterface<T> difference(BagInterface<T> anotherBag);
 
 
 }
