@@ -49,16 +49,23 @@ public final class LinkedBag<T> implements BagInterface<T>{
   public boolean contains(T item){
     return referenceTo(item) != null;
   }
-
+  //run-time = 3 + 3*n + x <= the frequency of item
+  // run-time = O(n)
   public int getFrequencyOf(T item){
     int result = 0;
     Node current = firstNode;
-    while(current != null){
+    while(current != null){ //number of items in the bag <= problem size (input size) (n)
       if(current.data.equals(item)){
         result++;
       }
       current = current.next;
     }
+
+    /* DON'T DO THAT
+    while(firstNode != null){
+      firstNode = firstNode.next;
+    }
+    */
 
     return result;
   }
