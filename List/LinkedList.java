@@ -3,18 +3,35 @@ public final class LinkedList<T> implements ListInterface<T>{
     private int size;
 
     public boolean add(T item, int position){
-      Node prev = referenceTo(position-1);
-      prev.next = new Node(item, prev.next);
+      checkPositionForAdd(position);
+      if(position == 0){
+        firstNode = new Node(item, firstNode);
+      } else {
+        Node prev = referenceTo(position-1);
+        prev.next = new Node(item, prev.next);
+      }
       size++;
       return true;
     }
 
     public T remove(int position){
-      return null;
+      checkPosition(position);
+      T result = null;
+      if(position == 0){
+        firstNode = firstNode.next;
+      } else{
+        Node prev = referenceTo(position-1);
+        Node at = prev.next;
+        result = at.data;
+        prev.next = at.next;
+      }
+      size--;
+      return result;
     }
 
     public T itemAt(int position){
-      return null;
+      checkPosition(position);
+      return referenceTo(position).data;
     }
 
     private Node referenceTo(int position){
@@ -28,6 +45,19 @@ public final class LinkedList<T> implements ListInterface<T>{
       result = current;
       return result;
     }
+
+    private void checkPositionForAdd(int position){
+      if(position < 0 || position > size){
+        throw new IndexOutOfBoundsException("Invalid position");
+      }
+    }
+
+    private void checkPosition(int position){
+      if(position < 0 || position > size-1){
+        throw new IndexOutOfBoundsException("Invalid position");
+      }
+    }
+
     private class Node {
       private T data;
       private Node next;
