@@ -20,7 +20,9 @@ public final class Recursion {
     System.out.println("----------------");
     displayArray3(new Integer[]{1, 6, 7, 10, 8, 9});
     System.out.println("----------------");
+
     displayArray3(new Integer[]{1, 13, 6, 7, 10});
+    towersOfHanoi(3, 0, 2, 1);
   }
 
   private static void countDown(int n){
@@ -110,4 +112,25 @@ public final class Recursion {
       displayArrayHelper3(array, mid+1, end);
     }
   }
+
+  private static void towersOfHanoi(
+        int nDisks, int start,
+        int end, int aux){
+        if(nDisks == 1){
+          System.out.println(
+            "Move one disk from Pole " +
+            start + " to Pole " + end);
+        } else {
+          towersOfHanoi(nDisks-1,
+                        start,
+                        aux, end);
+          System.out.println(
+            "Move one disk from Pole " +
+            start + " to Pole " + end);
+          towersOfHanoi(nDisks-1,
+                        aux,
+                        end,
+                        start);
+        }
+      }
 }
