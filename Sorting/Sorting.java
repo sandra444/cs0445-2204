@@ -1,23 +1,27 @@
 import java.util.Arrays;
 
 public class Sorting {
+  private static final int MIN_SIZE = 2;
   public static void main(String[] args){
     new Sorting();
   }
 
   public Sorting(){
-    Integer[] array = new Integer[]{20, 10, 0, 30, 15, 1, 2, 90, 9, 35, -1, 3};
+        Integer[] array = new Integer[]{20, 10, 0, 30, 15, 1, 2, 90, 9, 35, -1, 3, 15, -4, 3, 6};
         //selectionSort(array);
         //insertionSort(array);
         //ShellSort(array);
         //recursiveInsertionSort(array, 0, array.length-1);
         //recursiveSelectionSort(array, 0, array.length-1);
         //recursiveSelectionSort2(array, 0, array.length-1);
-        //System.out.println(Arrays.toString(array));
+        //mergeSort(array);
+        //quickSort(array);
+        quickSort2(array, 0, array.length-1);
+        System.out.println(Arrays.toString(array));
 
-        Node<Integer> firstNode = createChain(array);
-        firstNode = chainInsertionSort(firstNode);
-        printChain(firstNode);
+        // Node<Integer> firstNode = createChain(array);
+        // firstNode = chainInsertionSort(firstNode);
+        // printChain(firstNode);
   }
 
   public <T extends Comparable<? super T>>
@@ -38,7 +42,7 @@ public class Sorting {
     T smallest = a[first];
     int smallestIndex = first;
     for(int i=first+1; i<=last; i++){
-      if(a[i].compareTo(smallest)<0){
+      if(a[i].compareTo(smallest)<0){ //(<=) makes it unstable
         smallest = a[i];
         smallestIndex = i;
       }
@@ -51,7 +55,7 @@ public class Sorting {
     T largest = a[first];
     int largestIndex = first;
     for(int i=first+1; i<=last; i++){
-      if(a[i].compareTo(largest)>0){
+      if(a[i].compareTo(largest)>=0){ //(>) makes it unstable
         largest = a[i];
         largestIndex = i;
       }
@@ -99,7 +103,7 @@ public class Sorting {
   private <T extends Comparable<? super T>>
       void insertInOrder(T[] a, T item, int begin, int end){
         int index = end;
-        while(index >= begin && a[index].compareTo(item)>0){
+        while(index >= begin && a[index].compareTo(item)>0){ //(>=) makes it unstable
           a[index+1] = a[index];
           index--;
         }
@@ -145,7 +149,20 @@ public class Sorting {
     void recursiveInsertionSort(T[] a, int first, int last){
       if(last-first > 0){
         recursiveInsertionSort(a, first, last-1);
-        insertInOrder(a, a[last], first, last-1);
+        recursiveInsertInOrder(a, a[last], first, last-1);
+      }
+    }
+
+  private <T extends Comparable<? super T>>
+    void recursiveInsertInOrder(T[] a, T item, int begin, int end){
+      if(a[end].compareTo(item) <= 0){
+        a[end+1] = item;
+      } else if(begin == end){
+        a[end+1] = a[end];
+        a[end] = item;
+      } else {
+        a[end+1] = a[end];
+        a[end] = item;
       }
     }
 
@@ -210,5 +227,145 @@ public class Sorting {
       }
     }
 
+   public <T extends Comparable<? super T>>
+      void mergeSort(T[] a){
+        @SuppressWarnings("unchecked")
+        T[] output = (T[])new Comparable<?>[a.length];
+        mergeSort(a, 0, a.length-1, output);
+      }
+
+
+  private <T extends Comparable<? super T>>
+    void mergeSort(T[] a, int first, int last, T[] output){
+      if(last - first > 0){
+      //int mid = (first + last)/2; <= may cause an overflow
+        int mid = first + (last-first)/2;
+        mergeSort(a, first, mid, output);
+        mergeSort(a, mid+1, last, output);
+        if(a[mid].compareTo(a[mid+1]) > 0) //adaptive
+          merge(a, first, mid, last, output);
+      }
+    }
+
+  private <T extends Comparable<? super T>>
+    void merge(T[] a, int first, int mid, int last, T[] output){
+      // @SuppressWarnings("unchecked")
+      // T[] output = (T[])new Comparable<?>[last-first+1];
+
+      int i = first;
+      int j = mid+1;
+      int k = first;
+      while(i <= mid && j <= last){
+        if(a[i].compareTo(a[j]) <= 0){ // (<) makes the algorithm not stable
+          output[k] = a[i];
+          i++;
+        } else {
+          output[k] = a[j];
+          j++;
+        }
+        k++;
+      }
+      while(i <= mid){
+        output[k] = a[i];
+        i++;
+        k++;
+      }
+      while(j <= last){
+        output[k] = a[j];
+        j++;
+        k++;
+      }
+      for(int index=first; index<=last; index++){
+        a[index] = output[index];
+      }
+    }
+
+    public <T extends Comparable<? super T>>
+      void quickSort(T[] a){
+        quickSort(a, 0, a.length-1);
+      }
+
+    private <T extends Comparable<? super T>>
+      void quickSort(T[] a, int first, int last){
+        if(last - first + 1 > MIN_SIZE){
+          int pivotIndex = partition(a, first, last);
+          quickSort(a, first, pivotIndex-1);
+          quickSort(a, pivotIndex+1, last);
+        } else {
+          insertionSort(a, first, last);
+        }
+      }
+
+      private <T extends Comparable<? super T>>
+        void quickSort2(T[] a, int first, int last){
+          while(last - first + 1 > MIN_SIZE){
+            int pivotIndex = partition(a, first, last);
+            if((pivotIndex-1 - first + 1) <= (last - (pivotIndex+1) + 1)){
+              quickSort(a, first, pivotIndex-1);
+              //quickSort(a, pivotIndex+1, last);
+              //parameter = argument
+              //a = a;
+              first = pivotIndex+1;
+              //last = last;
+            } else {
+              quickSort(a, pivotIndex+1, last);
+              // quickSort(a, first, pivotIndex-1);
+              // a = a;
+              // first = first;
+              last = pivotIndex - 1;
+            }
+          }
+          insertionSort(a, first, last);
+
+        }
+
+      private <T extends Comparable<? super T>>
+        int partition(T[] a, int first, int last){
+          int mid = first + (last - first)/2;
+          SortThreeElements(a, first, mid, last);
+          swap(a, mid, last-1);
+          int pivotIndex = last-1;
+          T pivotValue = a[pivotIndex];
+
+          int i = first + 1;
+          int j = last - 2;
+
+          boolean done = false;
+
+          while(!done){
+            while(a[i].compareTo(pivotValue)<0){
+              i++;
+            }
+
+            while(a[j].compareTo(pivotValue)>0){
+              j--;
+            }
+
+            if(i > j){
+              done = true;
+            } else{
+              swap(a, i, j);
+              i++;
+              j--;
+            }
+          }
+
+          swap(a, last-1, i);
+          pivotIndex = i;
+          return pivotIndex;
+        }
+
+        private <T extends Comparable<? super T>>
+          void SortThreeElements(T[] a, int first, int mid, int last){
+            if(a[first].compareTo(a[mid]) > 0){
+              swap(a, first, mid);
+            }
+            if(a[mid].compareTo(a[last]) > 0){
+              swap(a, mid, last);
+            }
+            if(a[first].compareTo(a[mid]) > 0){
+              swap(a, first, mid);
+            }
+          }
 
 }
