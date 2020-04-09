@@ -42,7 +42,7 @@ public class Sorting {
     T smallest = a[first];
     int smallestIndex = first;
     for(int i=first+1; i<=last; i++){
-      if(a[i].compareTo(smallest)<0){
+      if(a[i].compareTo(smallest)<0){ //(<=) makes it unstable
         smallest = a[i];
         smallestIndex = i;
       }
@@ -55,7 +55,7 @@ public class Sorting {
     T largest = a[first];
     int largestIndex = first;
     for(int i=first+1; i<=last; i++){
-      if(a[i].compareTo(largest)>0){
+      if(a[i].compareTo(largest)>=0){ //(>) makes it unstable
         largest = a[i];
         largestIndex = i;
       }
@@ -103,7 +103,7 @@ public class Sorting {
   private <T extends Comparable<? super T>>
       void insertInOrder(T[] a, T item, int begin, int end){
         int index = end;
-        while(index >= begin && a[index].compareTo(item)>0){
+        while(index >= begin && a[index].compareTo(item)>0){ //(>=) makes it unstable
           a[index+1] = a[index];
           index--;
         }
@@ -256,7 +256,7 @@ public class Sorting {
       int j = mid+1;
       int k = first;
       while(i <= mid && j <= last){
-        if(a[i].compareTo(a[j]) <= 0){
+        if(a[i].compareTo(a[j]) <= 0){ // (<) makes the algorithm not stable
           output[k] = a[i];
           i++;
         } else {
